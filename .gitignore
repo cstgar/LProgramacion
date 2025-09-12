@@ -138,4 +138,10 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 
-.vscode
+# Carpetas de compilación
+[Bb]in/
+[Oo]bj/
+
+# Archivos de la plataforma
+.vs/
+.vscode/
