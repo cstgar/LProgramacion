@@ -145,3 +145,6 @@ vite.config.ts.timestamp-*
 # Archivos de la plataforma
 .vs/
 .vscode/
+
+#idea from intellij or pycharm
+.idea/
