@@ -61,6 +61,11 @@ namespace codebaselenguaje  // es el package de java
                     }
                 }
             }
+            // Mensaje solo para salir del ciclo while y mostrar que esta saliendo del programa
+            Console.WriteLine("Saliendo...");
+
+            //Espera al usuario a que presione enter
+            Console.ReadLine();
         }
     }
 }
