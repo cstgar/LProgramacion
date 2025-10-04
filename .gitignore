@@ -143,3 +143,6 @@ vite.config.ts.timestamp-*
 /obj
 .idea/
 .vs/
+
+# Archivos y directorios que deben ser ignorados por Git
+api_key
