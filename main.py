@@ -17,7 +17,7 @@ def kelvin_to_celsius_fahrenheit(kelvin):
     return celsius, fahrenheit
 
 url = BASE_URL + "appid=" + API_KEY + PARAMETERS +CITY + "," + COUNTRY + "&lang=" + LENG
-url_2 = BASE_URL + "appid=" + API_KEY + PARAMETERS +CITY + "," + COUNTRY + "&lang="
+url_2 = BASE_URL + "appid=" + API_KEY + PARAMETERS +CITY + "," + COUNTRY
 urlWithId = BASE_URL + "appid=" + API_KEY + PARAMETERS + "&id=" +ID
 urlZip = BASE_URL + "appid=" + API_KEY + PARAMETERS + "&zip=" + ZIPCODE +"," + COUNTRY
 response = requests.get(url).json()
