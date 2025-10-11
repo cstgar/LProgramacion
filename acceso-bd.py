@@ -34,5 +34,16 @@ elif opcion == "2":
 
     # Si hubo datos entonces se va mostrar la descripcion del producto
     myResult = cursorProductos.fetchall()
-    for row in myResult:
-        print(row[1])
+    if myResult:
+        # Si la lista NO está vacía, hubo datos
+        print("\n--- Producto(s) Encontrado(s) ---")
+        for row in myResult:
+            # Asumiendo que la columna 0 es 'clave' y la 1 es 'descripcion'
+            print("Clave: " + str(row[0]))
+            print("Descripcion: " + str(row[1]))
+            print("------------------")
+    else:
+        # 2. Si la lista ESTÁ vacía, la clave no existe
+        print(f"\nERROR: La clave '{clave}' no existe o no se encontró en la base de datos.")
+else:
+    print("Opcion no valida")
