@@ -13,7 +13,7 @@ namespace bdterminal
             int opcion = 0;
             SqlConnection conexion;
             Console.WriteLine("ABC Productos");
-            Console.WriteLine("Opcion");
+            Console.WriteLine("Opciones: 1.- Insertar elemento a tabla. 2.- Consultar elemento.");
             opcion = Convert.ToInt32(Console.ReadLine());
             conexion = new SqlConnection("Data Source=localhost; Database=lp_abc_multi; User Id=access_cinthia; Password=Salome123; TrustServerCertificate=True;");  //Crea el objeto que manejara la base de datos
             conexion.Open(); //Abre la conexion
@@ -47,10 +47,10 @@ namespace bdterminal
                         if (reader.Read())
                         {
                             //Si se encontraron datos, entonces mostrar la descripcion del producto
-                            while (reader.Read())
-                            {
-                                Console.WriteLine(reader["descripcion"].ToString());
-                            }
+                            Console.WriteLine($"--- Producto Encontrado ---");
+                            Console.WriteLine($"Clave: {reader["clave"].ToString()}");
+                            Console.WriteLine($"Descripción: {reader["descripcion"].ToString()}");
+                            Console.WriteLine($"--------------------------");
                         }
                         else
                         { 
@@ -61,6 +61,9 @@ namespace bdterminal
                 }
             }
             conexion.Close(); // cerrar la conexion
+            //Para mantener la ventana y saber si se ejecuto correctamente
+            Console.WriteLine("Presiona cualquier tecla para salir...");
+            Console.ReadKey();
         }
     }
 }
