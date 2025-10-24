@@ -143,3 +143,6 @@ vite.config.ts.timestamp-*
 /obj
 .idea/
 .vs/
+
+.venv
+
