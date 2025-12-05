@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36623.8 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegradoraTarjCliente", "IntegradoraTarjCliente\IntegradoraTarjCliente.csproj", "{C40CB128-C0F5-47E0-BA3E-64EC0BD9B33D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C40CB128-C0F5-47E0-BA3E-64EC0BD9B33D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C40CB128-C0F5-47E0-BA3E-64EC0BD9B33D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C40CB128-C0F5-47E0-BA3E-64EC0BD9B33D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C40CB128-C0F5-47E0-BA3E-64EC0BD9B33D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C3B7016F-E6C3-4E72-9530-4F9F91BDED0B}
+	EndGlobalSection
+EndGlobal
