@@ -1,0 +1,17 @@
+# Archivos y Directorios Generados por el Build
+
+# Directorios de compilación binarios (contienen el .exe y DLLs)
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
+
+# Archivos de Pruebas de Unidad (si los usas)
+*.trx
+*.vsix
+*.testsettings
+
+# Archivos de C# específicos (caché de ReSharper/IntelliSense)
+*.user
+*.suo
+*.sln.docstates
