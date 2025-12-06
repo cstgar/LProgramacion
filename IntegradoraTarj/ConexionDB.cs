@@ -14,6 +14,42 @@ namespace SocketServidor
         // Constructor
         public ConexionDB() { }
 
+        // Asegúrate de que tu cadena de conexión esté definida arriba
+
+        public Usuario Autenticar(string username, string password)
+        {
+            // Lógica para buscar el usuario y validar la contraseña en la BD
+            using (SqlConnection conexion = new SqlConnection(ConnectionString))
+            {
+                conexion.Open();
+
+                // Referencia a la tabla llamada 'Usuarios'
+                string sql = "SELECT Id, Username, Password, Rol FROM Usuarios WHERE Username = @User AND Password = @Pass";
+
+                using (SqlCommand cmd = new SqlCommand(sql, conexion))
+                {
+                    cmd.Parameters.Add("@User", SqlDbType.VarChar, 50).Value = username;
+                    cmd.Parameters.Add("@Pass", SqlDbType.VarChar, 50).Value = password;
+
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            // Mapear los datos del lector al objeto Usuario
+                            return new Usuario
+                            {
+                                Id = (int)reader["Id"],
+                                Username = reader["Username"].ToString(),
+                                Rol = reader["Rol"].ToString()
+                                // No es necesario devolver la contraseña
+                            };
+                        }
+                        return null; // Credenciales inválidas
+                    }
+                }
+            }
+        }
+
         // Mapea los resultados del SqlDataReader al objeto Solicitud (auxiliar)
         private Solicitud MapearSolicitud(SqlDataReader reader)
         {

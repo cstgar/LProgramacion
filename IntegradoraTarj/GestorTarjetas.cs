@@ -11,6 +11,29 @@ namespace SocketServidor
         // Constructor: Puedes inicializar aquí la capa de datos si fuera necesario
         public GestorTarjetas() { }
 
+        public RespuestaServidor ValidarCredenciales(string username, string password)
+        {
+            // La instancia de ConexionDB se llama _db
+            Usuario user = _db.Autenticar(username, password);
+
+            if (user != null)
+            {
+                return new RespuestaServidor
+                {
+                    Exito = true,
+                    Mensaje = $"Bienvenido, {user.Username} ({user.Rol}). Autenticación exitosa."
+                };
+            }
+            else
+            {
+                return new RespuestaServidor
+                {
+                    Exito = false,
+                    Mensaje = "Credenciales incorrectas o usuario no encontrado."
+                };
+            }
+        }
+
         // --- Funciones Auxiliares
         private static string GenerateCardNumber()
         {

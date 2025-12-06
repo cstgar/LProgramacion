@@ -129,6 +129,19 @@ namespace SocketServidor
             {
                 switch (operation)
                 {
+                    case "LOGIN":
+                        //parsear el payload
+                        string[] loginParts = payload.Split(';');
+                        if (loginParts.Length == 2)
+                        {
+                            //Llamar a capa de negocio
+                            respuesta = Gestor.ValidarCredenciales(loginParts[0], loginParts[1]);
+                        }
+                        else
+                        {
+                            respuesta = new RespuestaServidor { Exito = false, Mensaje = "Formato de login incorrecto" };
+                        }
+                        break;
                     case "INSERTAR":
                         Solicitud nuevaSolicitud = ParsePayloadToSolicitud(payload);
                         respuesta = Gestor.ProcesarNuevaSolicitud(nuevaSolicitud);
