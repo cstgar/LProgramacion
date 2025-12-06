@@ -27,6 +27,12 @@ namespace IntegradoraTarjCliente
                 Console.ReadKey();
                 return; // Salir si el servidor no está disponible
             }
+            if (!HandleLogin())
+            {
+                Console.WriteLine("\nAutenticación fallida. Cerrando aplicación.");
+                Console.ReadKey(); 
+                return; //Detiene la aplicacion si HandleLogin retorna false
+            }
 
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("Conexión al servidor establecida con éxito. \n");
@@ -84,6 +90,52 @@ namespace IntegradoraTarjCliente
         //                           INTERFAZ (MÉTODOS DE CONSTRUCCIÓN DE PAYLOAD)
         // --------------------------------------------------------------------------------
 
+        static bool HandleLogin()
+        {
+            Console.Clear();
+            Console.WriteLine("--- BIENVENIDO AL SISTEMA DE SOLICITUD DE TARJETA DE CREDITO DEL BANCO DE MEXICO ---");
+            Console.WriteLine("-- INICIO DE SESION ---");
+
+            // Intentar hasta 3 veces
+            for (int attempts = 0; attempts < 3; attempts++)
+            {
+                Console.Write("Usuario: ");
+                string username = Console.ReadLine();
+                Console.Write("Contraseña: ");
+                string password = Console.ReadLine();
+
+                // 1. Construir la solicitud de Login
+                string request = $"LOGIN|{username};{password}";
+
+                // 2. Enviar solicitud y recibir respuesta JSON
+                string responseJson = Gestor.SendRequest(request);
+
+                // 3. Deserializar la respuesta
+                RespuestaServidor respuesta = null;
+                try
+                {
+                    respuesta = Newtonsoft.Json.JsonConvert.DeserializeObject<RespuestaServidor>(responseJson);
+                }
+                catch (Newtonsoft.Json.JsonException)
+                {
+                    // Manejar si el Servidor devolvió algo que no es JSON (ej., error de la propia red)
+                    Console.WriteLine("Error: Respuesta de formato JSON inválido.");
+                    continue;
+                }
+
+                if (respuesta != null && respuesta.Exito)
+                {
+                    return true; // Aqui se genera el acceso
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine($"Intento {attempts + 1} fallido: {respuesta?.Mensaje ?? "Error de comunicación."}");
+                    Console.ResetColor();
+                }
+            }
+            return false; // Bloquear si falla después de 3 intentos
+        }
         static void DisplayMenu()
         {
             Console.WriteLine("--- GESTIÓN DE TARJETAS DE CRÉDITO ---");
