@@ -13,5 +13,8 @@ namespace IntegradoraTarjCliente
         public string StatusSolicitud { get; set; }
         public decimal? LimiteCredito { get; set; }
         public DateTime FechaSolicitud { get; set; } = DateTime.Now;
+        public string? NumTarjeta { get; set; }
+        public DateTime? FechaCorte { get; set; }
+        public string? ClabeSPEI { get; set; }
     }
 }

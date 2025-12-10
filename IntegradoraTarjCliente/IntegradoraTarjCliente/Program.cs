@@ -1,6 +1,7 @@
 ﻿//Codigo asincrono para usar con API y protocolo http
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading;
@@ -211,13 +212,14 @@ namespace IntegradoraTarjCliente
                         nuevaSolicitud.Direccion = $"{user.location.city}, {user.location.country}";
                         nuevaSolicitud.Correo = user.email;
                         nuevaSolicitud.TelefonoCelular = user.cell;
-                        nuevaSolicitud.Ocupacion = "Desconocida (Editar)"; // RandomUser no da ocupación
+                        nuevaSolicitud.Ocupacion = "Desconocida (Editar)"; // RandomUser no tiene dato
 
                         Console.ForegroundColor = ConsoleColor.Cyan;
                         Console.WriteLine("\n--- DATOS OBTENIDOS ---");
                         Console.WriteLine($"Nombre:   {nuevaSolicitud.NombreCliente}");
                         Console.WriteLine($"Dirección:{nuevaSolicitud.Direccion}");
                         Console.WriteLine($"Correo:   {nuevaSolicitud.Correo}");
+                        Console.WriteLine($"Celular: {nuevaSolicitud.TelefonoCelular}");
                         Console.WriteLine("-----------------------");
                         Console.ResetColor();
 
@@ -316,16 +318,18 @@ namespace IntegradoraTarjCliente
 
                 if (!response.IsSuccessStatusCode)
                 {
+                    Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine($"Error del servidor: {response.StatusCode}");
+                    Console.ResetColor();
                     return;
                 }
 
                 string jsonRespuesta = await response.Content.ReadAsStringAsync();
 
                 // PASO 2:Imprimimos lo que llego
-                Console.ForegroundColor = ConsoleColor.DarkGray;
-                Console.WriteLine($"\n[DEBUG] JSON RECIBIDO: {jsonRespuesta}\n");
-                Console.ResetColor();
+                //Console.ForegroundColor = ConsoleColor.DarkGray;
+                //Console.WriteLine($"\n[DEBUG] JSON RECIBIDO: {jsonRespuesta}\n");
+                
 
                 // PASO 3: Intentamos convertir manualmente con opciones flexibles
                 var opciones = new System.Text.Json.JsonSerializerOptions
@@ -339,20 +343,28 @@ namespace IntegradoraTarjCliente
                 // PASO 4: Mostrar datos
                 if (solicitud != null)
                 {
+                    Console.ForegroundColor = ConsoleColor.Green;
                     Console.WriteLine("\n--- DATOS DEL CLIENTE ---");
-                    Console.WriteLine($"Folio:      {solicitud.Folio}");
-                    Console.WriteLine($"Nombre:     {solicitud.NombreCliente}");
-                    Console.WriteLine($"Status:     {solicitud.StatusSolicitud}");
+                    Console.WriteLine($"Folio:              {solicitud.Folio}");
+                    Console.WriteLine($"Nombre:             {solicitud.NombreCliente}");
+                    Console.WriteLine($"Direccion:          {solicitud.Direccion}");
+                    Console.WriteLine($"Celular:            {solicitud.TelefonoCelular}");
+                    Console.WriteLine($"Status:             {solicitud.StatusSolicitud}");
 
                     // Usamos HasValue para saber si es nulo
-                    if (solicitud.LimiteCredito.HasValue)
+                    if (solicitud.LimiteCredito.HasValue && solicitud.LimiteCredito.Value > 0)
                     {
-                        Console.WriteLine($"Límite:     {solicitud.LimiteCredito.Value:C}");
+                        Console.WriteLine($"Límite de Credito:   {solicitud.LimiteCredito.Value:C}");
+                        Console.WriteLine($"Numero Tarjeta:      {solicitud.NumTarjeta}");
+                        Console.WriteLine($"Fecha de Corte:      {solicitud.FechaCorte.Value.ToShortDateString()}");
+                        Console.WriteLine($"Clabe SPEI:          {solicitud.ClabeSPEI}");
                     }
                     else
                     {
                         Console.WriteLine($"Límite:     (Sin Asignar)");
                     }
+
+                    Console.ResetColor();
                 }
             }
             catch (Exception ex)
@@ -373,29 +385,59 @@ namespace IntegradoraTarjCliente
 
             try
             {
+                Console.ForegroundColor = ConsoleColor.Yellow;
                 // 1. Obtener datos actuales
                 var sol = await client.GetFromJsonAsync<ApiSolicitud>($"Solicitudes/{folio}");
 
                 Console.WriteLine($"Modificando a: {sol.NombreCliente}");
 
                 // 2. Pedir nuevos datos (Enter para mantener actual)
-                Console.Write("Nuevo Nombre (Enter para saltar): ");
+                Console.Write("Nuevo Folio (Enter para saltar): ");
                 string val = Console.ReadLine();
+                if (!string.IsNullOrEmpty(val)) sol.Folio = val;
+                
+                Console.Write("Nuevo Nombre (Enter para saltar): ");
+                val = Console.ReadLine();
                 if (!string.IsNullOrEmpty(val)) sol.NombreCliente = val;
 
                 Console.Write("Nueva Dirección (Enter para saltar): ");
                 val = Console.ReadLine();
                 if (!string.IsNullOrEmpty(val)) sol.Direccion = val;
 
+                Console.Write("Nuevo Numero Celular (Enter para saltar): ");
+                val = Console.ReadLine();
+                if (!string.IsNullOrEmpty(val)) sol.TelefonoCelular = val;
+
+                Console.Write("Nuevo Correo (Enter para saltar): ");
+                val = Console.ReadLine();
+                if (!string.IsNullOrEmpty(val)) sol.Correo = val;
+
+                Console.Write("Nueva Ocupacion (Enter para saltar): ");
+                val = Console.ReadLine();
+                if (!string.IsNullOrEmpty(val)) sol.Ocupacion = val;
+                Console.ResetColor();
+
                 // 3. Enviar actualización
                 var response = await client.PutAsJsonAsync($"Solicitudes", sol);
 
-                if (response.IsSuccessStatusCode) Console.WriteLine("Actualizado correctamente.");
-                else Console.WriteLine($"Error: {response.StatusCode}");
+                if (response.IsSuccessStatusCode)
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine("Actualizado correctamente.");
+                    Console.ResetColor();
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine($"Error: {response.StatusCode}");
+                    Console.ResetColor();
+                }
             }
             catch
             {
+                Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("Error: Folio no encontrado.");
+                Console.ResetColor();
             }
         }
 
@@ -408,8 +450,18 @@ namespace IntegradoraTarjCliente
             if (Console.ReadLine().ToUpper() == "S")
             {
                 var response = await client.DeleteAsync($"Solicitudes/{folio}");
-                if (response.IsSuccessStatusCode) Console.WriteLine("Eliminado.");
-                else Console.WriteLine($"Error: {response.StatusCode}");
+                if (response.IsSuccessStatusCode)
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine("Eliminado.");
+                    Console.ResetColor();
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine($"Error: {response.StatusCode}");
+                    Console.ResetColor();
+                } 
             }
         }
 
@@ -449,9 +501,11 @@ namespace IntegradoraTarjCliente
                 }
                 catch (Exception ex)
                 {
+                    Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine($"Error de conexión con el servidor: {ex.Message}");
                     // Si no hay servidor, podríamos querer salir inmediatamente o reintentar
                     // Aquí decidimos contar como intento fallido.
+                    Console.ResetColor();
                 }
             }
 
