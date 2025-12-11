@@ -33,7 +33,7 @@ namespace API_TarjetasCredito.Controllers
 
             try
             {
-                // 2. Usar tu clase ConexionDB para buscar en SQL Server
+                // 2. Usar la clase ConexionDB para buscar en SQL Server
                 Usuario usuarioEncontrado = _conexion.Autenticar(datosIngresados.Username, datosIngresados.Password);
 
                 // 3. Verificar si se encontró

@@ -1,11 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using API_TarjetasCredito;
 using System.Linq;
+using System.Text.Json;
 
 namespace API_TarjetasCredito.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")] // Esto define la URL como: http://localhost:5000/api/solicitudes
+    [Route("api/[controller]")] // Esto define la URL como: http://... /api/solicitudes
     public class SolicitudesController : ControllerBase
     {
         // Instancia de tu lógica de negocio existente
@@ -16,6 +17,12 @@ namespace API_TarjetasCredito.Controllers
         [HttpGet("{folio}")]
         public IActionResult Consultar(string folio)
         {
+            Console.WriteLine("-------------------------");
+            Console.WriteLine("LLego una nueva peticion GET");
+            string datosTexto = JsonSerializer.Serialize(folio);
+            Console.Write($"[DATOS RECIBIDOS GET]: {datosTexto} ");
+            Console.WriteLine("-------------------------");
+
             var respuesta = _gestor.ConsultarSolicitud(folio);
 
             if (respuesta.Exito && respuesta.Solicitudes != null)
@@ -30,6 +37,12 @@ namespace API_TarjetasCredito.Controllers
         [HttpPost]
         public IActionResult Insertar([FromBody] Solicitud nuevaSolicitud)
         {
+            Console.WriteLine("-------------------------");
+            Console.WriteLine("LLego una nueva peticion POST");
+            string datosTexto = JsonSerializer.Serialize(nuevaSolicitud);
+            Console.Write($"[DATOS RECIBIDOS POST]: {datosTexto} ");
+            Console.WriteLine("-------------------------");
+
             var respuesta = _gestor.ProcesarNuevaSolicitud(nuevaSolicitud);
 
             if (respuesta.Exito)
@@ -46,6 +59,12 @@ namespace API_TarjetasCredito.Controllers
         [HttpPut]
         public IActionResult Modificar([FromBody] Solicitud solicitudModificar)
         {
+            Console.WriteLine("-------------------------");
+            Console.WriteLine("LLego una nueva peticion PUT");
+            string datosTexto = JsonSerializer.Serialize(solicitudModificar);
+            Console.Write($"[DATOS RECIBIDOS PUT]: {datosTexto} ");
+            Console.WriteLine("-------------------------");
+
             // Llamamos a tu lógica de negocio existente: ProcesarModificacion
             var respuesta = _gestor.ProcesarModificacion(solicitudModificar);
 
@@ -64,13 +83,19 @@ namespace API_TarjetasCredito.Controllers
         [HttpDelete("{folio}")]
         public IActionResult Eliminar(string folio)
         {
+            Console.WriteLine("-------------------------");
+            Console.WriteLine("LLego una nueva peticion DELETE");
+            string datosTexto = JsonSerializer.Serialize(folio);
+            Console.Write($"[DATOS RECIBIDOS DELETE]: {datosTexto} ");
+            Console.WriteLine("-------------------------");
+
             // Llamamos a tu lógica de negocio existente: ProcesarEliminacion
             var respuesta = _gestor.ProcesarEliminacion(folio);
 
             if (respuesta.Exito)
             {
                 // El estándar REST para borrar es devolver 204 No Content (éxito sin cuerpo)
-                // O puedes devolver Ok con un mensaje.
+                // O devolver Ok con un mensaje.
                 return Ok(new { mensaje = respuesta.Mensaje });
             }
             return NotFound(new { mensaje = respuesta.Mensaje });
